@@ -1,6 +1,6 @@
 <?php
-$id = $_GET['id'];
-$newLine = $_GET['task'];
+$id = $_GET['id']; //если тут добавить isset, то все ломается
+$newLine = $_GET['task']; //если тут добавить isset, то все ломается
 
 $lines = file('crud.txt');
 

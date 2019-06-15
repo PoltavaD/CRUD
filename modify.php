@@ -2,11 +2,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-?>
-
-<?php
-$id = $_GET['id'];
-
+$id = $_GET['id'];//если тут добавить isset, то все ломается
 $file = fopen('crud.txt', 'r');
 
 $line = '';

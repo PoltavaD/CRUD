@@ -39,9 +39,9 @@ foreach ($lines as $line_num => $line) {
 ?>
 
 <?
-    echo '<pre>',
+    echo '<pre>';
     print_r($lines);
-    echo '</pre>'
+    echo '</pre>';
 ?>
 
 </div>
