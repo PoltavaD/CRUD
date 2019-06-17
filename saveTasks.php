@@ -1,10 +1,19 @@
 <?php
-$id = $_GET['id']; //если тут добавить isset, то все ломается
-$newLine = $_GET['task']; //если тут добавить isset, то все ломается
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+}
 
-$lines = file('crud.txt');
+if (isset($_GET['task'])) {
+    $newLine = $_GET['task'];
+}
 
-$file = fopen('crud.txt', 'w');
+if (isset($_COOKIE['login'])) {
+    $crudFor = $_COOKIE['login'] . '_crud.txt';
+}
+
+$lines = file($crudFor);
+
+$file = fopen($crudFor, 'w');
 $counter = 0;
 foreach ($lines as $line) {
     if ($counter != $id) {

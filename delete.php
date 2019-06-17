@@ -2,11 +2,17 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-$id = $_GET['id']; //если тут добавить isset, то все ломается
+if(isset($_GET['id'])) {
+    $id = $_GET['id'];
+}
 
-$lines = file('crud.txt');
+if (isset($_COOKIE['login'])) {
+    $crudFor = $_COOKIE['login'] . '_crud.txt';
+}
 
-$file = fopen('crud.txt', 'w');
+$lines = file($crudFor);
+
+$file = fopen($crudFor, 'w');
 $counter = 0;
 foreach ($lines as $line) {
     if ($counter != $id) {
