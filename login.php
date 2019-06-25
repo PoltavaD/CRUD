@@ -43,9 +43,6 @@ while ($user = mysqli_fetch_array($result)) {
         header('location: crud.php');
         exit();
     } elseif ($login != $user['login'] or $pass != $user['pass']) {
-echo '<pre>';
-print_r($user['login']);
-echo '</pre>';
 //        mysqli_close($conn);
 //        ?><!--<div><a href="index.php">Неверный логин или пароль</a></div><br>--><?//
 //        exit();
