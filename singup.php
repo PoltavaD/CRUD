@@ -11,17 +11,11 @@ $conn = mysqli_connect(
     '',
     'crud'
 );
+
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
     exit();
 };
-
-$sql = 'select * from users';
-
-$result = mysqli_query(
-    $conn,
-    $sql
-);
 
 if (isset($_GET['pass']) && isset($_GET['pass2'])){
     $pass = $_GET['pass'];
@@ -31,6 +25,7 @@ if (isset($_GET['pass']) && isset($_GET['pass2'])){
 if ($pass != $pass2) {
     mysqli_close($conn);
     echo '<a href="index.php">Пароли не совпадают!</a>';
+    exit();
 }
 
 if (isset($_GET['login']) && isset($_GET['pass'])) {
@@ -38,21 +33,25 @@ if (isset($_GET['login']) && isset($_GET['pass'])) {
     $pass = $_GET['pass'];
 }
 
-$sqlIns = "insert into users (`login`,`pass`)
-       values ('" . $login . "','" . $pass . "')";
+$sql = 'select * from users where login="'.$login.'"';
 
+$result = mysqli_query(
+    $conn,
+    $sql
+);
 
-while ($user = mysqli_fetch_assoc($result)){
-    if ($login == $user['login']) {
-        echo '<a href="index.php">Такой пользователь уже есть</a>';
-    } else {
-        mysqli_query($conn, $sqlIns);
+$sql_ins = "insert into users (`login`,`pass`) values ('" . $login . "','" . $pass . "')";
+
+if($result->num_rows) {
+    echo '<a href="index.php">Такой пользователь уже есть</a>';
+    exit();
+} else {
+        mysqli_query($conn, $sql_ins);
         $_SESSION['auth'] = 'ok';
         $_SESSION['id'] = mysqli_insert_id($conn);
+        $_SESSION['login'] = $row['login'];
         mysqli_close($conn);
         header('location: crud.php');
         exit();
-    }
 }
-
 ?>

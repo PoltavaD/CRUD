@@ -2,35 +2,53 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-if(isset($_GET['id'])) {
+session_name('crud');
+session_start();
+
+$conn = mysqli_connect(
+    'localhost',
+    'root',
+    '',
+    'crud'
+);
+
+if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
+};
+
+if (isset($_SESSION['id'])) {
+    $user_id = $_SESSION['id'];
+}
+
+if(!isset($_GET['id'])) {
+    header('location: crud.php');
+    exit();
+} else {
     $id = $_GET['id'];
 }
 
-if (isset($_COOKIE['login'])) {
-    $crudFor = $_COOKIE['login'] . '_crud.txt';
-}
+$sql = 'select * from tasks where id='.$id;
 
-$file = fopen($crudFor, 'r');
+$result = mysqli_query(
+    $conn,
+    $sql
+);
 
-$line = '';
-for ($i=0; $i<=$id; $i++){
-    $line = fgets($file);
-}
-fclose($file);
+$row = mysqli_fetch_assoc($result);
 
+$task = $row['task'];
+$comments = $row['comments'];
+$deadline = $row['deadline'];
 
-echo '<pre>';
-print_r($line);
-echo '</pre>';
+mysqli_close($conn);
 
 ?>
 
 <form>
     <input name= "id" type="hidden" value="<?=$id?>">
-    <input name="task" value="<?=$line?>">
+    task: <input name="task" value="<?=$task?>"><br>
+    comments: <input name="comments" value="<?=$comments?>"><br>
+    deadline: <input name="deadline" type="date" value="<?=$deadline?>"><br>
     <button type="submit" formaction="saveTasks.php">modify</button>
-
 </form>
-
-
-

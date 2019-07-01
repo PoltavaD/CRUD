@@ -11,6 +11,7 @@ session_start();
     <title>CRUD</title>
 </head>
 <body>
+<div>
 <?
 echo '<pre>';
 print_r($_SESSION);
@@ -22,70 +23,73 @@ $conn = mysqli_connect(
     '',
     'crud'
 );
+
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
     exit();
 };
 
-$sql = 'select * from users';
+if (isset($_SESSION['id'])) {
+    $user_id = $_SESSION['id'];
+}
+
+$sql = 'select * from tasks where user_id='.$user_id;
 
 $result = mysqli_query(
-        $conn,
-        $sql
+    $conn,
+    $sql
 );
 
-$user = mysqli_fetch_assoc($result);
-
-echo '<pre>';
-print_r($user['id']);
-echo '</pre>';
-
-
-if(!isset($_SESSION['auth']) or $_SESSION['auth'] != 'ok') { ?>
+if (isset($_SESSION['auth']) && $_SESSION['auth'] == 'ok' ) {
+?>
+    <div><a href="logout.php">Logout</a></div>
+    <br><br>
     <div>
-        <form action="login.php">
-            <input name="login"><br>
-            <input name="pass"><br>
-            <button type="submit">Login</button>
+        <form>
+            task: <input name="task" placeholder="Обязательное поле"><br>
+            comments: <input name="comments"><br>
+            deadline: <input name="deadline" type="date"><br>
+            <button type="submit">Create</button>
         </form>
     </div>
-<? } elseif (isset($_SESSION['auth']) && $_SESSION['auth'] == 'ok' ) { ?>
-        <div><a href="logout.php">Logout</a></div><br>
 <?
-    if (isset($_SESSION['login'])) {
-        $crudFor = $_SESSION['login'] . '_crud.txt';
-        $file = fopen($crudFor, "a");
-        fclose($file);
-        ?>
-            <div>
-                <form>
-                    new task: <input name="task">
-                    <button type="submit">Create</button>
-                </form>
-            </div>
-            <div>
-        <?
-    } ?>
-<?} ?>
+}
 
-<?
-//    if(!isset($_SESSION['login'])) {
-//        exit("Введите логин и пароль");
-//}
-//
-//    if (isset ($_GET['task'])) {
-//        $file = fopen($crudFor, "a");
-//        fputs($file, $_GET['task'] . PHP_EOL);
-//        fclose($file);
-//}
-//
-//$lines = file($crudFor);
-//
-//foreach ($lines as $line_num => $line) {
-//    echo "Задача <b>{$line_num}</b> : " . $line . "<a href='delete.php?id=$line_num'>del</a>" . " " . "<a href='modify.php?id=$line_num'>modify</a>" . "<br />\n";
-//}
+if (!isset($_GET['comments']) || $_GET['comments'] == '') {
+    $comments = 'comments';
+} elseif (isset($_GET['comments']) && $_GET['comments'] != '') {
+    $comments = $_GET['comments'];
+}
+
+if(isset($_GET['deadline']) && $_GET['deadline'] != '') {
+    $deadline = $_GET['deadline'];
+} else {
+    $deadline = date('Y-m-d', time() + 2592000);
+}
+
+if (isset($_GET['task']) && $_GET['task'] != '') {
+    $task = $_GET['task'];
+    $sql = "INSERT INTO `tasks`(`task`, `comments`, `deadline`, `user_id`) VALUES ('" . $task . "','" . $comments ."','" . $deadline . "', $user_id)";
+    mysqli_query($conn, $sql);
+} else {
+    echo "Введите задачу" . '<br><br><br>';
+}
+
+$sql = 'select * from tasks where user_id='.$user_id;
+
+$result = mysqli_query(
+    $conn,
+    $sql
+);
+
+while ($task = mysqli_fetch_array($result)) {
+    echo ($task['task']) . ' ' . ($task['comments']) . ' ' . ($task['deadline']) . ' ' . "<a href='delete.php?id={$task['id']}'>del</a>" . ' ' . "<a href='modify.php?id={$task['id']}'>modify</a>" . '<br>';
+    echo '<br>';
+}
+
+mysqli_close($conn);
+
 ?>
-
 </div>
 </body>
 </html>

@@ -4,7 +4,6 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_name('crud');
 session_start();
-
 $conn = mysqli_connect(
     'localhost',
     'root',
@@ -17,7 +16,6 @@ if (mysqli_connect_errno()) {
     exit();
 };
 
-
 if (isset($_GET['login']) && isset($_GET['pass'])) {
     $login = $_GET['login'];
     $pass = $_GET['pass'];
@@ -28,26 +26,30 @@ if ($login == '' or $pass == ''){
     exit('Поля не могут быть пустыми!');
 }
 
-$sql = 'select * from users';
+$sql = 'select * from users where login="'.$login.'"';
 
 $result = mysqli_query(
     $conn,
     $sql
 );
 
-while ($user = mysqli_fetch_array($result)) {
-    if ($login == $user['login'] && $pass == $user['pass']) {
-        $_SESSION['auth'] = 'ok';
-        $_SESSION['id'] = $user['id'];
-        mysqli_close($conn);
-        header('location: crud.php');
-        exit();
-    } elseif ($login != $user['login'] or $pass != $user['pass']) {
-//        mysqli_close($conn);
-//        ?><!--<div><a href="index.php">Неверный логин или пароль</a></div><br>--><?//
-//        exit();
-    };
+$row = mysqli_fetch_assoc($result);
 
-};
-
+if(!$result->num_rows) {
+    mysqli_close($conn);
+    ?><div><a href="index.php">Зарегестрируйтесь!</a></div><br><?
+} elseif ($row['pass'] = $pass) {
+    $_SESSION['auth'] = 'ok';
+    $_SESSION['id'] = $row['id'];
+    $_SESSION['login'] = $row['login'];
+    mysqli_close($conn);
+    header('location: crud.php');
+    exit();
+//    ?><!--<div><a href="crud.php">CRUD</a></div><br>--><?//
+}
 ?>
+
+
+
+
+

@@ -22,15 +22,15 @@ if(!isset($_SESSION['auth']) or $_SESSION['auth'] != 'ok') { ?>
     <div class="signin">
         <form action="login.php">
             <input name="login"><br>
-            <input name="pass"><br>
+            <input name="pass" type="password"><br>
             <button type="submit">Sing in</button>
         </form>
     </div>
     <div class="signup">
         <form action="singup.php">
             <input name="login"><br>
-            <input name="pass"><br>
-            <input name="pass2"><br>
+            <input name="pass" type="password"><br>
+            <input name="pass2" type="password"><br>
             <button type="submit">Sing up</button>
         </form>
     </div>
