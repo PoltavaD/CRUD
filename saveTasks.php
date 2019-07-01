@@ -25,16 +25,24 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
 }
 
-if (isset($_GET['task'])) {
+if (isset($_GET['task']) && ($_GET['task']) != '') {
     $task = $_GET['task'];
+} else {
+    mysqli_close($conn);
+    header('location: crud.php');
+    exit();
 }
 
-if (isset($_GET['comments'])) {
+if (!isset($_GET['comments']) || $_GET['comments'] == '') {
+    $comments = 'comments';
+} elseif (isset($_GET['comments']) && $_GET['comments'] != '') {
     $comments = $_GET['comments'];
 }
 
-if (isset($_GET['deadline'])) {
+if(isset($_GET['deadline']) && $_GET['deadline'] != '') {
     $deadline = $_GET['deadline'];
+} else {
+    $deadline = date('Y-m-d', time() + 2592000);
 }
 
 $sql = 'select * from tasks where id='.$id;

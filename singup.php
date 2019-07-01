@@ -33,6 +33,8 @@ if (isset($_GET['login']) && isset($_GET['pass'])) {
     $pass = $_GET['pass'];
 }
 
+$pass = password_hash($pass, PASSWORD_DEFAULT);
+
 $sql = 'select * from users where login="'.$login.'"';
 
 $result = mysqli_query(
@@ -49,7 +51,6 @@ if($result->num_rows) {
         mysqli_query($conn, $sql_ins);
         $_SESSION['auth'] = 'ok';
         $_SESSION['id'] = mysqli_insert_id($conn);
-        $_SESSION['login'] = $row['login'];
         mysqli_close($conn);
         header('location: crud.php');
         exit();

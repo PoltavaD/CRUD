@@ -35,13 +35,14 @@ $result = mysqli_query(
 
 $row = mysqli_fetch_assoc($result);
 
+$pass = password_verify($pass, $row['pass']);
+
 if(!$result->num_rows) {
     mysqli_close($conn);
     ?><div><a href="index.php">Зарегестрируйтесь!</a></div><br><?
-} elseif ($row['pass'] = $pass) {
+} elseif ($pass) {
     $_SESSION['auth'] = 'ok';
     $_SESSION['id'] = $row['id'];
-    $_SESSION['login'] = $row['login'];
     mysqli_close($conn);
     header('location: crud.php');
     exit();

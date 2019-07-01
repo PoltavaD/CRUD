@@ -36,12 +36,16 @@ $result = mysqli_query(
 );
 
 $row = mysqli_fetch_assoc($result);
-
-$task = $row['task'];
-$comments = $row['comments'];
-$deadline = $row['deadline'];
-
-mysqli_close($conn);
+if ($user_id == $row['user_id']) {
+    $task = $row['task'];
+    $comments = $row['comments'];
+    $deadline = $row['deadline'];
+    mysqli_close($conn);
+} else {
+    mysqli_close($conn);
+    header('location: index.php');
+    exit();
+}
 
 ?>
 

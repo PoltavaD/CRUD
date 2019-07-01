@@ -21,10 +21,29 @@ if (isset($_SESSION['id'])) {
     $user_id = $_SESSION['id'];
 }
 
-if(isset($_GET['id'])) {
-    $task_id = $_GET['id'];
-    $sql = "delete from tasks where id=$task_id";
+if(!isset($_GET['id']) || $_GET['id'] == '') {
+    header('location: crud.php');
+    exit();
+} else {
+    $id = $_GET['id'];
+}
+
+$sql = 'select * from tasks where id='.$id;
+
+$result = mysqli_query(
+    $conn,
+    $sql
+);
+
+$row = mysqli_fetch_assoc($result);
+
+if ($user_id == $row['user_id']) {
+    $sql = "delete from tasks where id=$id";
     mysqli_query($conn, $sql);
+    mysqli_close($conn);
+    header('location: crud.php');
+    exit();
+} else {
     mysqli_close($conn);
     header('location: crud.php');
     exit();
