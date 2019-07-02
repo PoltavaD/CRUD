@@ -56,11 +56,14 @@ $row = mysqli_fetch_assoc($result);
 
 $sql_ins = "UPDATE `tasks` set `id`=$id, `task`='" . $task . "', `comments`='" . $comments . "', `deadline`='" . $deadline . "' , `user_id`=$user_id where `id`=$id";
 
-if($user_id == $row['user_id']) {
-//echo $sql_ins;
+if(isset($row['user_id']) && $row['user_id'] == $user_id) {
     mysqli_query($conn, $sql_ins);
     mysqli_close($conn);
     header('location: crud.php');
+    exit();
+} else {
+    mysqli_close($conn);
+    header('location: logout.php');
     exit();
 }
 ?>

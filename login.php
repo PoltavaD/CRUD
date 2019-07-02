@@ -35,7 +35,13 @@ $result = mysqli_query(
 
 $row = mysqli_fetch_assoc($result);
 
-$pass = password_verify($pass, $row['pass']);
+if (isset($row['pass']) && $row['pass'] != '') {
+    $pass = password_verify($pass, $row['pass']);
+} else {
+    mysqli_close($conn);
+    header('location: logout.php');
+    exit();
+}
 
 if(!$result->num_rows) {
     mysqli_close($conn);
